@@ -16,6 +16,9 @@ pub enum TokenType {
     AND,
     OR,
     NOT,
+    FOR,
+    LOOP,
+    WHILE,
     
     PLUS,
     MINUS,
@@ -39,16 +42,21 @@ pub enum TokenType {
     RBR,
 
     EOF,
-    UNC,
+    UNK,
+}
+
+pub struct Pos {
+    pub file_id: u32,
+    pub offset:  u32,
+}
+
+pub struct Span {
+    pub start: Pos,
+    pub end:   Pos,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Token {
     pub typet: TokenType,
-    // длина не нужна str уже имеет длину
-    // pub len: usize,
-    pub line: i32,
-    pub col:  i32,
-    pub data: &'a str,
-    // Срез строки, как вариант сырой указатель data: *const u8
+    pub span:  Span,
 }

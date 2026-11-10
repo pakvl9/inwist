@@ -1,14 +1,14 @@
-use crate::token::{Token, TokenType};
+mod token;
+use token::*;
 use std::collections::HashMap;
 
 pub struct Lexer<'a> {
-    rest: &'a str,
-    // string_view только оставшейся части файла 
+    source: &'a str,
     line: usize,
     col:  usize,
 
-    keyws: HashMap<&'static str, TokenType>,
-    ops: HashMap<&'static str, TokenType>,
+    keyws:  HashMap<&'static str, TokenType>,
+    ops:    HashMap<&'static str, TokenType>,
     opsdbl: HashMap<&'static str, TokenType>,
 }
 
@@ -54,7 +54,7 @@ impl<'a> Lexer<'a> {
         ]);
 
         Self {
-            rest: data,
+            source: data,
             line: 1,
             col:  1,
 
@@ -65,12 +65,12 @@ impl<'a> Lexer<'a> {
     }
 
     fn peek(&self) -> Option<char>{
-        self.rest.chars().next()
+        self.source.chars().next()
     }
     fn advance(&mut self) -> Option<char> {
         let ch = self.peek()?;
 
-        self.rest = &self.rest[ch.len_utf8()..];
+        self.source = self.source[ch.len_utf8()..];
         // перемещение начала среза на длину символа в байтах utf8
 
         if ch == '\n' {
@@ -89,7 +89,7 @@ impl<'a> Lexer<'a> {
                 self.advance();
             }
 
-            if self.rest.starts_with("//") {
+            if self.source.starts_with("//") {
                 while let Some(c) = self.peek() {
                     if c == '\n' {
                         break
@@ -101,13 +101,13 @@ impl<'a> Lexer<'a> {
                 continue;
             }
 
-            if self.rest.starts_with("/*") {
+            if self.source.starts_with("/*") {
                 let l_st = self.line;
                 let c_st = self.col;
 
                 self.advance();self.advance();
 
-                while !self.rest.starts_with("*/") {
+                while !self.source.starts_with("*/") {
                     if self.advance().is_none() {
                         return Err(format!("Unclosed comment at {l_st}:{c_st}"));
                     }
