@@ -1,3 +1,5 @@
+use crate::base::*;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TokenType {
     ID,
@@ -13,12 +15,16 @@ pub enum TokenType {
 
     IF,
     ELSE,
+    SWITCH,
+    CASE,
     AND,
     OR,
     NOT,
     FOR,
     LOOP,
+    BREAK,
     WHILE,
+    GOTO,
     
     PLUS,
     MINUS,
@@ -38,21 +44,13 @@ pub enum TokenType {
 
     LPAR,
     RPAR,
-    LBR,
-    RBR,
+    LBRACE,
+    RBRACE,
+    LBRAKET,
+    RBRAKET,
 
     EOF,
     UNK,
-}
-
-pub struct Pos {
-    pub file_id: u32,
-    pub offset:  u32,
-}
-
-pub struct Span {
-    pub start: Pos,
-    pub end:   Pos,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
