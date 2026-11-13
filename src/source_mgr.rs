@@ -71,21 +71,9 @@ impl SrcMgr {
             it = (file.line_s.len() - 1) as u32;
         }
 
-        let line = 
+        let line = it + 1;
+        let col  = pos.offset - file.line_s[it];
 
+        Some(Loc{line, col})
     }
 }
-    FindLoc (Pos pos) const {
-        const auto &file = GetFile (pos.FileId);
-
-        // Ищем первую строку, которая начинается СТРОГО ПОСЛЕ pos.Start
-        auto it = std::ranges::upper_bound (file.LineStarts, pos.Start);
-
-        // Индекс найденного элемента в массиве идеально совпадает с 1-based номером нашей строки!
-        auto line
-            = static_cast<std::uint32_t> (std::distance (file.LineStarts.begin (), it));
-        auto lineStartOffset = file.LineStarts[line - 1];
-        auto col             = pos.Start - lineStartOffset + 1;
-
-        return { line, col };
-    }
