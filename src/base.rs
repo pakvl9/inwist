@@ -1,6 +1,9 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct FileId(u32);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Pos {
-    pub file_id: u32,
+    pub file_id: FileId,
     pub offset:  u32,
 }
 
@@ -15,6 +18,3 @@ pub struct Loc {
     pub line: u32,
     pub col:  u32,
 }
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct FileId(u32);

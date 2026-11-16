@@ -47,15 +47,15 @@ impl SrcMgr {
         }
     }
 
-    pub fn add(&mut self, name: impl Into<String>, src: impl Into<String>) -> u32 {
+    pub fn add(&mut self, name: impl Into<String>, src: impl Into<String>) -> FileId {
         let file: File = File::new(name, src);
         self.files.push(file);
 
-        (self.files.len() - 1) as u32
+        FileId((self.files.len() - 1) as u32)
     }
 
-    pub fn get(&self, id: u32) -> Option<&File> {
-        self.files.iter().nth(id as usize)
+    pub fn get(&self, id: FileId) -> Option<&File> {
+        self.files.iter().nth(id.0 as usize)
     }
 
     pub fn loc(&self, pos: Pos) -> Option<Loc> {
@@ -76,4 +76,23 @@ impl SrcMgr {
 
         Some(Loc{line, col})
     }
+
+    pub fn line_content(&self, pos: Pos) -> &str {
+        let file = self.get(pos.file_id)?;
+    }
 }
+
+/*
+    std::string_view GetLineContent (std::uint32_t id, std::uint32_t line) const {
+        const auto &file = GetFile (id);
+        if (line == 0 || line > file.LineStarts.size ()) {
+            return "";
+        }
+
+        auto start = file.LineStarts[line - 1];
+        auto end   = line < file.LineStarts.size () ? file.LineStarts[line] - 1
+                                                    : file.Content.size ();
+
+        return { file.Content.data () + start, end - start };
+    }
+*/
