@@ -61,7 +61,7 @@ impl SrcMgr {
     pub fn loc(&self, pos: Pos) -> Option<Loc> {
         let file = self.get(pos.file_id)?;
 
-        let mut it= u32::MAX;
+        let mut it = u32::MAX;
         for i in file.line_s {
             if i >= pos.offset {
                 it = i-1;
@@ -79,20 +79,15 @@ impl SrcMgr {
 
     pub fn line_content(&self, pos: Pos) -> &str {
         let file = self.get(pos.file_id)?;
+        let line = self.loc(pos).line;
+
+        let line_start = file.line_s.get(line - 1)?;
+        let line_end   = if line < file.line_s.len() {
+            file.line_s[line] - 1
+        } else {
+            file.src.len()
+        };
+
+        &file.src[line_start..line_end]
     }
 }
-
-/*
-    std::string_view GetLineContent (std::uint32_t id, std::uint32_t line) const {
-        const auto &file = GetFile (id);
-        if (line == 0 || line > file.LineStarts.size ()) {
-            return "";
-        }
-
-        auto start = file.LineStarts[line - 1];
-        auto end   = line < file.LineStarts.size () ? file.LineStarts[line] - 1
-                                                    : file.Content.size ();
-
-        return { file.Content.data () + start, end - start };
-    }
-*/
